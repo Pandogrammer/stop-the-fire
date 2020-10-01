@@ -50,6 +50,7 @@ namespace Game.Components.Fire.Scripts
             EveryUpdate
                 .Where(_ => _beingKnockedBackTimer <= 0)
                 .Select(_ => FindClosestAliveHumedal())
+                .Where(HumedalIsNotNull)
                 .Subscribe(MoveTowardsTarget)
                 .AddTo(_disposables);
 
@@ -59,6 +60,8 @@ namespace Game.Components.Fire.Scripts
                 .Subscribe()
                 .AddTo(_disposables);
         }
+
+        private static bool HumedalIsNotNull(Humedal it) => it != null;
 
         private void PushBackByWaterSubscription()
         {

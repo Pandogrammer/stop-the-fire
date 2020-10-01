@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.Components.Humedales.Scripts;
 using UniRx;
@@ -7,47 +8,45 @@ using Utils.Unity.PandoBehaviours;
 
 namespace Game.Components.CircleOfFire.Scripts
 {
+    [Serializable]
+    public class HumedalCircle
+    {
+        public int Radius;
+        public GameObject CircleOfHumedales;
+        public List<Humedal> Humedales => CircleOfHumedales.GetComponentsInChildren<Humedal>().ToList();
+    }
     public class CircleOfFire : AutoLoadMonoBehaviour
     {
         [SerializeField] private SphereCollider _collision;
-
-        private List<int> _radius = new List<int> {10, 7, 3};
-        private List<List<Humedal>> _humedalCircles = new List<List<Humedal>>();
+        [SerializeField] private List<HumedalCircle> _humedalCircles;
 
         private int state;
         protected override void Load()
         {
-            Initialize();
+            SetRadius();
 
             EveryUpdate
+                .TakeWhile(_ => StateIsInRange)
                 .Where(_ => AllHumedalsOfRingAreDead(state))
-                .Subscribe(_ => AdvanceState())
+                .Do(_ => AdvanceState())
+                .Where(_ => StateIsInRange)
+                .Do(_ => SetRadius())
+                .Subscribe()
                 .AddTo(_disposables);
         }
 
-        private void AdvanceState()
+        private bool StateIsInRange => state < _humedalCircles.Count;
+
+        private void AdvanceState() => state += 1;
+
+        private void SetRadius()
         {
-            state += 1;
-            _collision.radius = _radius[state];
+            _collision.radius = _humedalCircles[state].Radius;
         }
 
         private bool AllHumedalsOfRingAreDead(int ring)
         {
-            return _humedalCircles[ring].All(it => it.IsBurnt());
-        }
-
-        private void Initialize()
-        {
-            for (var i = 0; i < _radius.Count; i++)
-            {
-                if (_humedalCircles[i] == null)
-                    _humedalCircles[i] = new List<Humedal>();
-            }
-
-            var humedales = FindObjectsOfType<Humedal>().ToList();
-            humedales.ForEach(it => { _humedalCircles[it.RingFromCenter].Add(it); });
-
-            _collision.radius = _radius[state];
+            return _humedalCircles[ring].Humedales.All(it => it.IsBurnt());
         }
     }
 }

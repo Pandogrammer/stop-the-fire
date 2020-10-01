@@ -9,10 +9,8 @@ namespace Game.Components.Humedales.Scripts
     {
         [SerializeField] private Collider _collision;
         [SerializeField] private GameObject _burntState;
-        [SerializeField] private int _ringFromCenter;
 
         private bool _burnt;
-        public int RingFromCenter => _ringFromCenter;
         protected override void Load()
         {
             _collision.OnTriggerEnterAsObservable()
