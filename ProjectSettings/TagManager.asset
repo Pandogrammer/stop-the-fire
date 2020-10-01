@@ -10,6 +10,7 @@ TagManager:
   - Water
   - Fire
   - CircleOfFire
+  - WatchingFire
   layers:
   - Default
   - TransparentFX

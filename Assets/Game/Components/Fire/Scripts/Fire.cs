@@ -14,6 +14,7 @@ namespace Game.Components.Fire.Scripts
     {
         [SerializeField] private Collider _waterCollision;
         [SerializeField] private Collider _humedalCollision;
+        [SerializeField] private Collider _circleOfFireCollision;
         [SerializeField] private float _speed;
         [SerializeField] private float _pushBackSpeed;
 
@@ -25,13 +26,21 @@ namespace Game.Components.Fire.Scripts
             PushBackByWaterSubscription();
             GoTowardsNearestHumedalSubscription();
             DestroyWhenHumedalTouchedSubscription();
+            DestroyWhenLeftCircleOfFireSubscription();
+        }
+
+        private void DestroyWhenLeftCircleOfFireSubscription()
+        {
+            _circleOfFireCollision.OnTriggerExitAsObservable()
+                .Where(it => it.CompareTag("CircleOfFire"))
+                .Subscribe(_ => Destroy(this))
+                .AddTo(_disposables);
         }
 
         private void DestroyWhenHumedalTouchedSubscription()
         {
             _humedalCollision.OnTriggerEnterAsObservable()
                 .Where(it => it.CompareTag("Humedal"))
-                .Delay(TimeSpan.FromMilliseconds(500))
                 .Subscribe(_ => Destroy(this))
                 .AddTo(_disposables);
         }
@@ -40,7 +49,7 @@ namespace Game.Components.Fire.Scripts
         {
             EveryUpdate
                 .Where(_ => _beingKnockedBackTimer <= 0)
-                .Select(_ => FindClosestHumedal())
+                .Select(_ => FindClosestAliveHumedal())
                 .Subscribe(MoveTowardsTarget)
                 .AddTo(_disposables);
 
@@ -66,18 +75,19 @@ namespace Game.Components.Fire.Scripts
             transform.Translate(Vector3.forward * (_speed * Time.deltaTime));
         }
 
-        private Humedal FindClosestHumedal()
+        private Humedal FindClosestAliveHumedal()
         {
             var minDistance = 10000f;
             Humedal target = null;
             _humedales.ForEach(it =>
             {
+                if (it.IsBurnt())
+                    return;
                 var distance = Vector3.Distance(transform.position, it.transform.position);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    target = it;
-                }
+                if (!(distance < minDistance)) 
+                    return;
+                minDistance = distance;
+                target = it;
             });
             return target;
         }
