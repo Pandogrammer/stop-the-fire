@@ -10,7 +10,8 @@ namespace Game.Context.Scripts
     {
 
         [SerializeField] private GameObject _prfFire;
-        [SerializeField] private float _fireSpawnCooldown;
+        [SerializeField] private float _fireSpawnMinCooldown;
+        [SerializeField] private float _fireSpawnMaxCooldown;
 
         private float _fireSpawnTimer;
     
@@ -34,7 +35,7 @@ namespace Game.Context.Scripts
 
         private void SpawnFire(Vector3 position)
         {
-            _fireSpawnTimer = _fireSpawnCooldown;
+            _fireSpawnTimer = Random.Range(_fireSpawnMinCooldown, _fireSpawnMaxCooldown);
             Instantiate(_prfFire, position, Quaternion.identity);
         }
     }

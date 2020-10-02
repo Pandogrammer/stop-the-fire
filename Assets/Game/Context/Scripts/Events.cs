@@ -1,7 +1,14 @@
 namespace Game.Context.Scripts
 {
-    public enum Events
+    public static class Events
     {
-        Defeat
+        public static Defeat Defeat()
+        {
+            return new Defeat();
+        }
+    }
+
+    public class Defeat
+    {
     }
 }

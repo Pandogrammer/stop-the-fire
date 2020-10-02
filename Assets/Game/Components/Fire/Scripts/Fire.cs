@@ -7,6 +7,7 @@ using UniRx.Triggers;
 using UnityEngine;
 using Utils.Extensions;
 using Utils.Unity.PandoBehaviours;
+using Random = UnityEngine.Random;
 
 namespace Game.Components.Fire.Scripts
 {
@@ -15,13 +16,16 @@ namespace Game.Components.Fire.Scripts
         [SerializeField] private Collider _waterCollision;
         [SerializeField] private Collider _humedalCollision;
         [SerializeField] private Collider _circleOfFireCollision;
-        [SerializeField] private float _speed;
+        [SerializeField] private float _minSpeed;
+        [SerializeField] private float _maxSpeed;
         [SerializeField] private float _pushBackSpeed;
 
+        private float _speed;
         private List<Humedal> _humedales;
         private float _beingKnockedBackTimer;
         protected override void Load()
         {
+            _speed = Random.Range(_minSpeed, _maxSpeed);
             _humedales = FindObjectsOfType<Humedal>().ToList();
             PushBackByWaterSubscription();
             GoTowardsNearestHumedalSubscription();

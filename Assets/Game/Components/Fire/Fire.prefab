@@ -5041,7 +5041,8 @@ MonoBehaviour:
   _waterCollision: {fileID: 6843523195859646799}
   _humedalCollision: {fileID: 5771062689411323733}
   _circleOfFireCollision: {fileID: 5448385282264400906}
-  _speed: 1
+  _minSpeed: 0.7
+  _maxSpeed: 2
   _pushBackSpeed: 30
 --- !u!1 &5912345505757412069
 GameObject:

@@ -1,5 +1,7 @@
+using Game.Context.Scripts;
 using UniRx;
 using UnityEngine;
+using Utils;
 using Utils.Unity.PandoBehaviours;
 
 namespace Game.Components.Totem.Scripts
@@ -23,6 +25,7 @@ namespace Game.Components.Totem.Scripts
             _waterEmission.enabled = false;
             StopShootingSubscription();
         }
+
 
         private void StopShootingSubscription()
         {

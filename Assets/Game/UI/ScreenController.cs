@@ -34,7 +34,7 @@ namespace Game.UI
                 .Subscribe(SetTimer)
                 .AddTo(_disposables);
 
-            EventStream.Receive<Events>()
+            EventStream.Receive<Defeat>()
                 .Do(_ => SwitchToDefeat())
                 .Subscribe()
                 .AddTo(_disposables);

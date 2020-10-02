@@ -1,4 +1,6 @@
-﻿using Game.Components.Humedales.Scripts;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Game.Components.Humedales.Scripts;
 using UniRx;
 using UnityEngine;
 using Utils;
@@ -8,14 +10,16 @@ namespace Game.Context.Scripts
 {
     public class DefeatChecker : AutoLoadMonoBehaviour
     {
-        [SerializeField] private Humedal _lastHumedal;
+        private List<Humedal> _allHumedals;
 
         protected override void Load()
         {
+            _allHumedals = FindObjectsOfType<Humedal>().ToList();
+            
             EveryUpdate
-                .Where(_ => _lastHumedal.IsBurnt())
+                .Where(_ => _allHumedals.All(it => it.IsBurnt()))
                 .First()
-                .Subscribe(_ => EventStream.Send(Events.Defeat));
+                .Subscribe(_ => EventStream.Send(Events.Defeat()));
         }
     }
 }
