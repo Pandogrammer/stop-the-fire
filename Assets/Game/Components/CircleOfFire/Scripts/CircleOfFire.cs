@@ -12,7 +12,7 @@ namespace Game.Components.CircleOfFire.Scripts
     public class HumedalCircle
     {
         public int Radius;
-        public GameObject CircleOfHumedales;
+        public CircleOfHumedales.Scripts.CircleOfHumedales CircleOfHumedales;
         public List<Humedal> Humedales => CircleOfHumedales.GetComponentsInChildren<Humedal>().ToList();
     }
     public class CircleOfFire : AutoLoadMonoBehaviour
@@ -37,7 +37,11 @@ namespace Game.Components.CircleOfFire.Scripts
 
         private bool StateIsInRange => state < _humedalCircles.Count;
 
-        private void AdvanceState() => state += 1;
+        private void AdvanceState()
+        {
+            _humedalCircles[state].CircleOfHumedales.SetAsBurnt();
+            state += 1;
+        } 
 
         private void SetRadius()
         {
