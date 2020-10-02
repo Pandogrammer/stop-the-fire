@@ -17,21 +17,25 @@ namespace Game.Components.WathingFire.Scripts
         protected override void Load()
         {
             EveryUpdate
-                .Subscribe(_ => transform.LookAt(Vector3.zero));
+                .Subscribe(_ => transform.LookAt(Vector3.zero))
+                .AddTo(_disposables);
 
             _collision.OnTriggerEnterAsObservable()
                 .Where(it => it.CompareTag("CircleOfFire"))
                 .Do(_ => canMove = false)
-                .Subscribe().AddTo(_disposables);
+                .Subscribe()
+                .AddTo(_disposables);
 
             _collision.OnTriggerExitAsObservable()
                 .Where(it => it.CompareTag("CircleOfFire"))
                 .Do(_ => canMove = true)
-                .Subscribe().AddTo(_disposables);
+                .Subscribe()
+                .AddTo(_disposables);
 
             EveryUpdate
                 .Where(_ => canMove)
-                .Subscribe(_ => transform.Translate(Vector3.forward * Time.deltaTime));
+                .Subscribe(_ => transform.Translate(Vector3.forward * Time.deltaTime))
+                .AddTo(_disposables);
 
             
             Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(1f))
