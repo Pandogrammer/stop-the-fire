@@ -19,6 +19,8 @@ namespace Game.UI
         //defeat
         [SerializeField] private TextMeshProUGUI _timeResisted;
         [SerializeField] private Button _restartButton;
+        [SerializeField] private Button _moreInformationButton;
+        
         
         private string _resistedText = "Resististe";
 
@@ -28,7 +30,13 @@ namespace Game.UI
         {
             Screen.SetResolution(720, 1280, false);
 
-            _restartButton.OnClickAsObservable().Subscribe(_ => SceneManager.LoadScene("Game"));
+            _restartButton
+                .OnClickAsObservable()
+                .Subscribe(_ => RestartGame());
+            
+            _moreInformationButton
+                .OnClickAsObservable()
+                .Subscribe(_ => OpenMoreInformation());
             
             timerSubscription = Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(1))
                 .Subscribe(SetTimer)
@@ -40,6 +48,16 @@ namespace Game.UI
                 .AddTo(_disposables);
 
             SetResistanceText(0.ToString());
+        }
+
+        private void OpenMoreInformation()
+        {
+            Application.OpenURL("https://www.argentina.gob.ar/ambiente/conciencia-ambiental/incendios-delta");
+        }
+
+        private static void RestartGame()
+        {
+            SceneManager.LoadScene("Game");
         }
 
         private void SwitchToDefeat()
