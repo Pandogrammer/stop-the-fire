@@ -1,3 +1,4 @@
+using System;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -15,13 +16,17 @@ namespace Game.Components.Humedales.Scripts
         {
             _collision.OnTriggerEnterAsObservable()
                 .Where(it => it.CompareTag("Fire"))
-                .Subscribe(_ => Burn());
+                .Subscribe(_ => Burn())
+                .AddTo(_disposables);
         }
 
         private void Burn()
         {
             _burnt = true;
             _burntState.SetActive(true);
+            Observable.Timer(TimeSpan.FromSeconds(1))
+                .First()
+                .Subscribe(_ => _collision.enabled = false);
         }
 
         public bool IsBurnt() => _burnt;
